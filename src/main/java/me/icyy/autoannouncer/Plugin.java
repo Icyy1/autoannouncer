@@ -6,6 +6,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
+import net.md_5.bungee.api.ChatColor;
+
 public final class Plugin extends JavaPlugin
 {
   private static final Logger LOGGER=Logger.getLogger("autoannouncer");
@@ -23,14 +25,18 @@ public final class Plugin extends JavaPlugin
       LOGGER.info("config.yml created!");
     }
 
-    final String message = getConfig().getString("message");
-    final int interval = getConfig().getInt("interval");
+    String message = getConfig().getString("message");
+    String prefix = getConfig().getString("prefix");
+    int interval = getConfig().getInt("interval");
+    String color = getConfig().getString("color");
+
+    final String finalMessage = ChatColor.translateAlternateColorCodes('&', color) + prefix + message;
 
     BukkitScheduler scheduler = getServer().getScheduler();
     scheduler.scheduleSyncRepeatingTask(this, new Runnable() {
       @Override
       public void run() {
-        Bukkit.broadcastMessage(message);
+        Bukkit.broadcastMessage(finalMessage);
       }
     }, 0L, interval * 20L);
   }
