@@ -1,0 +1,4 @@
+name: autoannouncer
+main: me.icyy.autoannouncer.Plugin
+version: 1
+api-version: 1.15

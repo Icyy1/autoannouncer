@@ -1,0 +1,2 @@
+message: "default message"
+interval: 300 # in seconds, so 300 is 5 minutes.
