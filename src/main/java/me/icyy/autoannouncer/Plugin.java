@@ -1,6 +1,5 @@
 package me.icyy.autoannouncer;
 
-import java.io.File;
 import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -12,25 +11,22 @@ public final class Plugin extends JavaPlugin
 {
   private static final Logger LOGGER=Logger.getLogger("autoannouncer");
 
-  private File configFile = new File(getDataFolder(), "config.yml");
+  String message = getConfig().getString("message");
+  String prefix = getConfig().getString("prefix");
+  int interval = getConfig().getInt("interval");
+  String color = getConfig().getString("color");
+
+  final String finalMessage = ChatColor.translateAlternateColorCodes('&', color) + prefix + message;
+
+  private static Plugin instance;
 
   @Override
   public void onEnable()
   {
+    instance = this;
+    this.saveDefaultConfig();
+
     LOGGER.info("autoannouncer enabled!");
-    
-    if(!configFile.exists())
-    {
-      saveDefaultConfig();
-      LOGGER.info("config.yml created!");
-    }
-
-    String message = getConfig().getString("message");
-    String prefix = getConfig().getString("prefix");
-    int interval = getConfig().getInt("interval");
-    String color = getConfig().getString("color");
-
-    final String finalMessage = ChatColor.translateAlternateColorCodes('&', color) + prefix + message;
 
     BukkitScheduler scheduler = getServer().getScheduler();
     scheduler.scheduleSyncRepeatingTask(this, new Runnable() {
@@ -39,6 +35,11 @@ public final class Plugin extends JavaPlugin
         Bukkit.broadcastMessage(finalMessage);
       }
     }, 0L, interval * 20L);
+  }
+
+  public static Plugin getInstance()
+  {
+    return instance;
   }
 
   @Override
